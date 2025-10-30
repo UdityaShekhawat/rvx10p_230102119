@@ -614,9 +614,13 @@ end
   signals to monitor
   
 Rs1E        // Should show register being read (x1, x2)
+
 RdM         // Should match Rs1E when forwarding occurs
+
 ForwardAE   // Should be 2'b10 (forward from MEM) or 2'b01 (forward from WB)
+
 SrcAE       // Should show forwarded value, not stale value from register
+
 ALUResultM  // The value being forwarded
  
  <img width="1904" height="810" alt="Screenshot 2025-10-26 212422" src="https://github.com/user-attachments/assets/b443d5b3-f486-48e4-b2b8-22caa18851b8" />
@@ -628,14 +632,22 @@ ALUResultM  // The value being forwarded
 <img width="1877" height="290" alt="Screenshot 2025-10-26 212817" src="https://github.com/user-attachments/assets/47567af7-fb8d-46a6-83c2-6dcb08d499b7" />
 
 ### One-cycle stall correctly inserted for load-use.
-signals to monitor
+
+
 ResultSrcEb0    // Should be 1 for load instruction in EX stage
+
 Rs1D, Rs2D      // Registers needed by instruction in ID
+
 RdE             // Destination of load in EX stage
+
 StallF          // Should be 1 during stall cycle
+
 StallD          // Should be 1 during stall cycle
+
 FlushE          // Should be 1 to insert bubble (NOP) in EX
+
 PCF             // Should NOT increment during stall
+
 InstrD          // Should remain same during stall
 
 <img width="983" height="219" alt="Screenshot 2025-10-26 215217" src="https://github.com/user-attachments/assets/cda02967-98a2-40e0-9a63-444ebb45c5ff" />
@@ -643,12 +655,19 @@ InstrD          // Should remain same during stall
 <img width="1904" height="477" alt="Screenshot 2025-10-26 215149" src="https://github.com/user-attachments/assets/c628dc9c-fdf4-4248-be53-0cd23b1e0023" />
 
 ### Pipeline flush works for taken branches
+
 PCSrcE          // Should be 1 when branch taken
+
 BranchE         // Should be 1 for branch instruction
+
 ZeroE           // Should be 1 when operands equal
+
 FlushD          // Should be 1 to flush IF/ID register
+
 FlushE          // Should be 1 to flush ID/EX register
+
 PCTargetE       // Target address of branch
+
 ValidD, ValidE  // Should go to 0 for flushed instructions
 
 <img width="937" height="148" alt="Screenshot 2025-10-26 220603" src="https://github.com/user-attachments/assets/0cc719d9-2922-444d-985c-5b9e125c37ca" />

@@ -600,13 +600,25 @@ end
 ---
 ## Verification and waveform
 
-Single test program finishes with store of 25 to memory address 100.
+### Single test program finishes with store of 25 to memory address 100.
+
 <img width="1589" height="733" alt="25 at 100 (1)" src="https://github.com/user-attachments/assets/42d57a82-2f3e-4c10-8ff7-fb102e3eee40" />
 
-x0 register remains constant at zero
+### x0 register remains constant at zero
+   addi x0, x0, 1          # x0=0,should not change 200        00100013 
+   
 <img width="1894" height="495" alt="R0 is 0" src="https://github.com/user-attachments/assets/f416c073-6260-496d-86bb-d87de2afd066" />
 
- Forwarding verified for back-to-back ALU ops.
+ ### Forwarding verified for back-to-back ALU ops.
+ 
+  signals to monitor
+  
+Rs1E        // Should show register being read (x1, x2)
+RdM         // Should match Rs1E when forwarding occurs
+ForwardAE   // Should be 2'b10 (forward from MEM) or 2'b01 (forward from WB)
+SrcAE       // Should show forwarded value, not stale value from register
+ALUResultM  // The value being forwarded
+ 
  <img width="1904" height="810" alt="Screenshot 2025-10-26 212422" src="https://github.com/user-attachments/assets/b443d5b3-f486-48e4-b2b8-22caa18851b8" />
 
 <img width="1893" height="278" alt="Screenshot 2025-10-26 212517" src="https://github.com/user-attachments/assets/1e49ecb8-b1da-492c-a298-e3eecad8cb0c" />
@@ -615,12 +627,30 @@ x0 register remains constant at zero
 
 <img width="1877" height="290" alt="Screenshot 2025-10-26 212817" src="https://github.com/user-attachments/assets/47567af7-fb8d-46a6-83c2-6dcb08d499b7" />
 
-• One-cycle stall correctly inserted for load-use.
+### One-cycle stall correctly inserted for load-use.
+signals to monitor
+ResultSrcEb0    // Should be 1 for load instruction in EX stage
+Rs1D, Rs2D      // Registers needed by instruction in ID
+RdE             // Destination of load in EX stage
+StallF          // Should be 1 during stall cycle
+StallD          // Should be 1 during stall cycle
+FlushE          // Should be 1 to insert bubble (NOP) in EX
+PCF             // Should NOT increment during stall
+InstrD          // Should remain same during stall
+
 <img width="983" height="219" alt="Screenshot 2025-10-26 215217" src="https://github.com/user-attachments/assets/cda02967-98a2-40e0-9a63-444ebb45c5ff" />
 
 <img width="1904" height="477" alt="Screenshot 2025-10-26 215149" src="https://github.com/user-attachments/assets/c628dc9c-fdf4-4248-be53-0cd23b1e0023" />
 
-Pipeline flush works for taken branches
+### Pipeline flush works for taken branches
+PCSrcE          // Should be 1 when branch taken
+BranchE         // Should be 1 for branch instruction
+ZeroE           // Should be 1 when operands equal
+FlushD          // Should be 1 to flush IF/ID register
+FlushE          // Should be 1 to flush ID/EX register
+PCTargetE       // Target address of branch
+ValidD, ValidE  // Should go to 0 for flushed instructions
+
 <img width="937" height="148" alt="Screenshot 2025-10-26 220603" src="https://github.com/user-attachments/assets/0cc719d9-2922-444d-985c-5b9e125c37ca" />
 
 <img width="1820" height="471" alt="Screenshot 2025-10-26 220615" src="https://github.com/user-attachments/assets/5e8b2fcc-8edf-4cd1-b3ac-bd120bcc9a39" />
@@ -631,7 +661,8 @@ Pipeline flush works for taken branches
 
 <img width="1883" height="862" alt="Screenshot 2025-10-26 220659" src="https://github.com/user-attachments/assets/2c2e47e1-33be-4032-8ca6-509127c1ea55" />
 
-pipeline concurrency
+### Pipeline concurrency
+
 <img width="1569" height="735" alt="Screenshot 2025-10-26 224253" src="https://github.com/user-attachments/assets/f7b6a523-ba79-4734-8bd0-9c7f7294e0a7" />
 
 <img width="1626" height="781" alt="Screenshot 2025-10-26 224301" src="https://github.com/user-attachments/assets/1e059e93-08f5-4b72-82b7-fa61b6c2b764" />
@@ -644,6 +675,7 @@ pipeline concurrency
 
  ## Simulation Output
  <img width="1522" height="208" alt="25 at 100 (2)" src="https://github.com/user-attachments/assets/e427b7bc-c736-4104-a6b9-af94df0df359" />
+ 
 <img width="398" height="190" alt="Screenshot 2025-10-30 220528" src="https://github.com/user-attachments/assets/26c73e70-82ad-44d6-a0ca-049d59d3f765" />
 
 
